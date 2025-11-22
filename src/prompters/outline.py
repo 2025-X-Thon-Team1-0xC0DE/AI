@@ -1,6 +1,8 @@
 from .abstract import Prompter
 from src.enums import DocumentCategory
 
+from typing import Optional
+
 
 # =================================================================
 # 1. 개요 생성 전용 템플릿 (OUTLINE_TEMPLATES)
@@ -64,9 +66,9 @@ OUTLINE_RULE = """
 # 3. OutlinePrompter 클래스
 # =================================================================
 class OutlinePrompter(Prompter):
-    def __init__(self, category: DocumentCategory, keywords: list[str] = None):
+    def __init__(self, category: DocumentCategory, keywords: Optional[list[str]] = None):
         self.category = category
-        self.keywords = keywords if keywords else []
+        self.keywords = keywords
 
     def get_prompt(self) -> str:
         # 1. 카테고리별 기본 페르소나 로드
