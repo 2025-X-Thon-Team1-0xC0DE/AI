@@ -45,3 +45,37 @@ target/
 !**/src/main/**/target/
 .gradle/
 build
+
+# =====================================
+# 4. AI (Python / FastAPI)
+# =====================================
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+env/
+venv/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+pip-wheel-metadata/
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pyre/
+.pytype/
+cython_debug/
+instance/
+.webassets-cache/
+# =====================================
