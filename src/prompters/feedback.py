@@ -1,4 +1,4 @@
-from .abstract import Prompter
+from .abstract import Prompter, COMMON_RULE
 from src.enums import DocumentCategory
 
 # System Prompt
@@ -34,12 +34,6 @@ PROMPT_TEMPLATES = {
     3. 표현이 너무 구어체이거나 비학문적인 단어가 쓰였는지 체크하십시오.
     """,
 }
-
-COMMON_RULE = (
-    "\n\n중요: 사용자의 글을 절대 직접 수정하지 마세요. 대신 '이 부분은 ~한 이유로 어색함', '~에 대한 검증이 부족함' 등의 형식으로 가이드만 제시하세요."
-    "사용자 키워드 중심으로 확인하세요."
-)
-
 
 # 프롬프터 클래스: FeedbackPrompter
 # 사용 예시: FeedbackPrompter(category=DocumentCategory.RESUME).get_prompt()

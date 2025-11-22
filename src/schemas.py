@@ -17,3 +17,13 @@ class FeedbackResponse(BaseModel):
     category: DocumentCategory
     status: str  # "success" 또는 "error"
     feedback: list[str]  # 피드백 리스트
+
+
+class EvaluationRequest(BaseModel):
+    category: DocumentCategory
+    keywords: list[str]
+    user_text: str
+
+
+class EvaluationResponse(BaseModel):
+    summary: str
