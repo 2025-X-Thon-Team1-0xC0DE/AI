@@ -1,4 +1,4 @@
-from .abstract import Prompter, COMMON_RULE
+from .abstract import Prompter
 from src.enums import DocumentCategory
 
 # System Prompt
@@ -35,12 +35,16 @@ PROMPT_TEMPLATES = {
     """,
 }
 
+# 공통 규칙
+FEEDBACK_RULE = "\n\n중요: 사용자의 글을 절대 직접 수정하지 마세요. 대신 '이 부분은 ~한 이유로 어색함', '~에 대한 검증이 부족함' 등의 형식으로 가이드만 제시하세요."
+
+
 # 프롬프터 클래스: FeedbackPrompter
 # 사용 예시: FeedbackPrompter(category=DocumentCategory.RESUME).get_prompt()
 class FeedbackPrompter(Prompter):
-    def __init__(self, category: DocumentCategory, keyword: list):
+    def __init__(self, category: DocumentCategory, keywords: list):
         self.category = category
-        self.keyword = keyword
+        self.keywords = keywords
 
     def get_prompt(self) -> str:
         return (
@@ -48,6 +52,6 @@ class FeedbackPrompter(Prompter):
                 self.category,
                 PROMPT_TEMPLATES[DocumentCategory.RESUME],  # 기본값 처리
             )
-            + f"사용자가 적고자 하는 키워드 : {self.keyword}"
-            + COMMON_RULE
+            + f"사용자가 적고자 하는 키워드 : {self.keywords}"
+            + FEEDBACK_RULE
         )

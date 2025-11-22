@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 from openai import AsyncOpenAI
 
 from settings import OPENAI_API_KEY
-from src.prompters import FeedbackPrompter, EvaluationPrompter
+from src.prompters import FeedbackPrompter, EvaluationPrompter, OutlinePrompter
 from src.schemas import (
     FeedbackRequest,
     FeedbackResponse,
@@ -21,7 +21,15 @@ router = APIRouter(prefix="/api", tags=["gaide-api"])
 async def generate_feedback(request: FeedbackRequest):
     try:
         # 프롬프터 생성
-        prompter = FeedbackPrompter(category=request.category, keyword=request.keyword)
+        if request.request_type == 1:
+            prompter = FeedbackPrompter(
+                category=request.category, keywords=request.keywords
+            )
+        else:
+            prompter = OutlinePrompter(
+                category=request.category, keywords=request.keywords
+            )
+
         full_system_prompt = prompter.get_prompt()
 
         # OpenAI API 호출
