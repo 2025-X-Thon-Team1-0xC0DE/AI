@@ -32,7 +32,7 @@ PROMPT_TEMPLATES = {
     2. 문단 연결: 문단과 문단 사이의 논리적 연결(Flow)이 자연스러운지 보십시오.
     3. 어휘 선택: 너무 구어체이거나 비전문적인 표현이 쓰였는지 체크하십시오.
     """,
-    # 4. [NEW] 자기소개서 (COVER_LETTER): 스토리텔링, 직무 적합성 위주
+    # 4. 자기소개서 (COVER_LETTER): 스토리텔링, 직무 적합성 위주
     DocumentCategory.COVER_LETTER: """
     당신은 기업의 채용 담당 면접관입니다.
     사용자의 '자기소개서(Cover Letter)'를 읽고 이 지원자가 우리 회사에 맞는 인재인지 검토합니다.
@@ -50,13 +50,17 @@ FEEDBACK_RULE = """
 2. 당신의 역할은 'Editor'가 아니라 'Reviewer'입니다. 고쳐주는 대신 **'질문'**을 던지십시오.
 3. 지적할 때는 "이 부분은 ~한 이유로 설득력이 약합니다. 구체적인 수치를 추가해보세요."와 같이 **명확한 이유**를 제시하십시오.
 4. 어투는 전문가답게 정중하지만 냉철하게(Professional & Objective) 유지하십시오.
+5. 줄바꿈은 \\n\\n 으로 수행하십시오.
 """
 
 
 class FeedbackPrompter(Prompter):
-    def __init__(self, category: DocumentCategory, keywords: list[str] = None):
+    def __init__(
+        self, category: DocumentCategory, keywords: list[str], description: str
+    ):
         self.category = category
         self.keywords = keywords if keywords else []
+        self.description = description
 
     def get_prompt(self) -> str:
         # 1. 카테고리별 템플릿 로드
@@ -70,5 +74,9 @@ class FeedbackPrompter(Prompter):
             keyword_list_str = ", ".join(self.keywords)
             keyword_section = f"\n\n[사용자가 강조하고자 하는 핵심 키워드]\n{keyword_list_str}\n(위 키워드들이 글의 맥락 속에 자연스럽게 녹아있는지 중점적으로 확인하십시오.)"
 
-        # 3. 최종 조합
-        return base_template + keyword_section + FEEDBACK_RULE
+        description_section = ""
+        if self.description:
+            description_section = f"\n\n[글의 작성 의도/목표]\n{self.description}\n(작성자가 밝힌 위 의도와 목표에 부합하는 글인지 확인하십시오.)"
+
+        # 4. 최종 조합 (설명 섹션 포함)
+        return base_template + keyword_section + description_section + FEEDBACK_RULE

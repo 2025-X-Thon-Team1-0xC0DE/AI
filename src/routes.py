@@ -8,7 +8,6 @@ from src.prompters import FeedbackPrompter, EvaluationPrompter, OutlinePrompter
 from src.schemas import (
     FeedbackRequest,
     FeedbackResponse,
-    OutlineResponse,
     EvaluationRequest,
     EvaluationResponse,
 )
@@ -25,11 +24,15 @@ async def generate_feedback(request: FeedbackRequest):
         # 프롬프터 생성
         if request.request_type == FeedbackType.FEEDBACK:
             prompter = FeedbackPrompter(
-                category=request.category, keywords=request.keywords
+                category=request.category,
+                keywords=request.keywords,
+                description=request.description,
             )
         elif request.request_type == FeedbackType.OUTLINE:
             prompter = OutlinePrompter(
-                category=request.category, keywords=request.keywords
+                category=request.category,
+                keywords=request.keywords,
+                description=request.description,
             )
 
         full_system_prompt = prompter.get_prompt()
@@ -46,22 +49,10 @@ async def generate_feedback(request: FeedbackRequest):
         )
 
         # 응답 파싱
-        feedback_content = (
-            response.choices[0].message.content.strip()
-            if response.choices[0].message.content
-            else ""
+        feedback_content = list(response.choices[0].message.content.split("\n\n"))
+        return FeedbackResponse(
+            feedback=feedback_content,
         )
-
-        # 응답 반환
-        if request.request_type == FeedbackType.FEEDBACK:
-            return FeedbackResponse(
-                category=request.category,
-                feedback_content=feedback_content,
-            )
-        elif request.request_type == FeedbackType.OUTLINE:
-            return OutlineResponse(
-                outline=feedback_content,
-            )
     # 예외 처리
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -72,7 +63,11 @@ async def generate_feedback(request: FeedbackRequest):
 async def generate_evaluation(request: EvaluationRequest):
     try:
         # 프롬프터 생성
-        prompter = EvaluationPrompter(category=request.category)
+        prompter = EvaluationPrompter(
+            category=request.category,
+            keywords=request.keywords,
+            description=request.description,
+        )
         full_system_prompt = prompter.get_prompt()
 
         # 키워드 문자열 생성
@@ -83,10 +78,7 @@ async def generate_evaluation(request: EvaluationRequest):
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": full_system_prompt},
-                {
-                    "role": "user",
-                    "content": f"키워드: {keywords_str}\n\n{request.user_text}",
-                },
+                {"role": "user", "content": request.user_text},
             ],
             temperature=0.7,
             max_tokens=500,
