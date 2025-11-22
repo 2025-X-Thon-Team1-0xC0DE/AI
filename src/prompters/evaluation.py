@@ -1,4 +1,4 @@
-from .abstract import Prompter, COMMON_RULE
+from .abstract import Prompter
 from src.enums import DocumentCategory
 
 PROMPT_TEMPLATES = {
@@ -18,7 +18,6 @@ PROMPT_TEMPLATES = {
 
     위 기준에 따라 [총평]만을 출력하세요.
     """,
-
     DocumentCategory.REPORT: """
     당신은 논리적이고 깐깐한 전략 기획 팀장입니다.
     사용자의 '비즈니스 보고서'를 종합 평가합니다.
@@ -35,7 +34,6 @@ PROMPT_TEMPLATES = {
 
     위 기준에 따라 [총평]만을 출력하세요.
     """,
-
     DocumentCategory.ESSAY: """
     당신은 대학원 지도 교수입니다.
     사용자의 '논문' 또는 '에세이'를 학술적 기준으로 종합 평가합니다.
@@ -62,7 +60,9 @@ class EvaluationPrompter(Prompter):
         self.category = category
 
     def get_prompt(self) -> str:
-        return PROMPT_TEMPLATES.get(
-            self.category,
-            PROMPT_TEMPLATES[DocumentCategory.RESUME],  # 기본값 처리
-        ) + COMMON_RULE
+        return (
+            PROMPT_TEMPLATES.get(
+                self.category,
+                PROMPT_TEMPLATES[DocumentCategory.RESUME],  # 기본값 처리
+            )
+        )
