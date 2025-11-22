@@ -46,8 +46,11 @@ async def generate_feedback(request: FeedbackRequest):
         )
 
         # 응답 파싱
-        feedback_content = response.choices[0].message.content.strip() \
-            if response.choices[0].message.content else ""
+        feedback_content = (
+            response.choices[0].message.content.strip()
+            if response.choices[0].message.content
+            else ""
+        )
 
         # 응답 반환
         if request.request_type == FeedbackType.FEEDBACK:
@@ -98,7 +101,7 @@ async def generate_evaluation(request: EvaluationRequest):
 
         # 응답 반환
         return EvaluationResponse(
-            summary=summary_content,
+            eval=summary_content,
         )
 
     # 예외 처리
