@@ -8,9 +8,11 @@ from src.prompters import FeedbackPrompter, EvaluationPrompter, OutlinePrompter
 from src.schemas import (
     FeedbackRequest,
     FeedbackResponse,
+    OutlineResponse,
     EvaluationRequest,
     EvaluationResponse,
 )
+from src.enums import FeedbackType
 
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 router = APIRouter(prefix="/api", tags=["gaide-api"])
@@ -21,11 +23,11 @@ router = APIRouter(prefix="/api", tags=["gaide-api"])
 async def generate_feedback(request: FeedbackRequest):
     try:
         # 프롬프터 생성
-        if request.request_type == 1:
+        if request.request_type == FeedbackType.FEEDBACK:
             prompter = FeedbackPrompter(
                 category=request.category, keywords=request.keywords
             )
-        else:
+        elif request.request_type == FeedbackType.OUTLINE:
             prompter = OutlinePrompter(
                 category=request.category, keywords=request.keywords
             )
@@ -44,19 +46,19 @@ async def generate_feedback(request: FeedbackRequest):
         )
 
         # 응답 파싱
-        feedback_content = (
-            list(response.choices[0].message.content.split("\n\n"))
-            if response.choices[0].message.content
-            else []
-        )
+        feedback_content = response.choices[0].message.content.strip() \
+            if response.choices[0].message.content else ""
 
         # 응답 반환
-        return FeedbackResponse(
-            category=request.category,
-            status="success",
-            feedback=feedback_content,
-        )
-
+        if request.request_type == FeedbackType.FEEDBACK:
+            return FeedbackResponse(
+                category=request.category,
+                feedback_content=feedback_content,
+            )
+        elif request.request_type == FeedbackType.OUTLINE:
+            return OutlineResponse(
+                outline=feedback_content,
+            )
     # 예외 처리
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,10 +1,8 @@
 from .abstract import Prompter
 from src.enums import DocumentCategory
 
+from typing import Optional
 
-# =================================================================
-# 1. 개요 생성 전용 템플릿 (OUTLINE_TEMPLATES)
-# =================================================================
 OUTLINE_TEMPLATES = {
     DocumentCategory.RESUME: """
     당신은 냉철한 인사 담당자입니다.
@@ -48,9 +46,6 @@ OUTLINE_TEMPLATES = {
     """,
 }
 
-# =================================================================
-# 2. 출력 포맷 강제 규칙 (JSON) - 개요 전용
-# =================================================================
 OUTLINE_RULE = """
 [최종 출력 형식 (반드시 준수)]
 1. 서술형 줄글로 대답하지 마십시오.
@@ -60,13 +55,12 @@ OUTLINE_RULE = """
 """
 
 
-# =================================================================
-# 3. OutlinePrompter 클래스
-# =================================================================
 class OutlinePrompter(Prompter):
-    def __init__(self, category: DocumentCategory, keywords: list[str] = None):
+    def __init__(
+        self, category: DocumentCategory, keywords: Optional[list[str]] = None
+    ):
         self.category = category
-        self.keywords = keywords if keywords else []
+        self.keywords = keywords
 
     def get_prompt(self) -> str:
         # 1. 카테고리별 기본 페르소나 로드
