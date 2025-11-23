@@ -39,7 +39,7 @@ PROMPT_TEMPLATES = {
     4. 방법론/근거: 주장을 뒷받침하는 근거가 타당한가
     5. 학술적 표현: 문체, 용어 사용이 학술적으로 적절한가
     """,
-    # 4. [NEW] 자기소개서 (COVER_LETTER)
+    # 4. 자기소개서 (COVER_LETTER)
     DocumentCategory.COVER_LETTER: """
     당신은 기업 채용 면접관입니다.
     사용자의 '자기소개서(Cover Letter)'를 읽고 면접에 부를 만한 인재인지 평가합니다.
@@ -55,16 +55,19 @@ PROMPT_TEMPLATES = {
 
 EVALUATION_RULE = """
 [출력 지침]
-1. 서론("분석 결과입니다" 등)을 생략하고, 즉시 **[총평]** 내용을 출력하십시오.
+1. 서론("분석 결과입니다" 등)을 생략하고, 즉시 총평 내용을 출력하십시오.
 2. 3~4문장 분량으로, 지원자의 강점과 보완할 점을 포함하여 냉철하게 작성하십시오.
 3. 사용자가 입력한 **핵심 키워드**가 글에 잘 반영되었는지도 평가에 포함하십시오.
 """
 
 
 class EvaluationPrompter(Prompter):
-    def __init__(self, category: DocumentCategory, keywords: Optional[list[str]] = None):
+    def __init__(
+        self, category: DocumentCategory, keywords: list[str], description: str
+    ):
         self.category = category
         self.keywords = keywords if keywords else []
+        self.description = description
 
     def get_prompt(self) -> str:
         # 1. 기본 템플릿 로드

@@ -1,6 +1,4 @@
 from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
 
 from src.enums import DocumentCategory
 
@@ -10,23 +8,20 @@ class FeedbackRequest(BaseModel):
     category: DocumentCategory
     keywords: list
     request_type: int
+    description: str
     user_text: str
     # 필요하다면 이전 대화 내역(history) 필드 추가 가능
 
 
 # 응답 데이터 모델 (Spring Boot로 보낼 데이터)
 class FeedbackResponse(BaseModel):
-    category: DocumentCategory
-    feedback_content: str  # 피드백
-
-
-class OutlineResponse(BaseModel):
-    outline: str
+    feedback: list[str]  # 피드백
 
 
 class EvaluationRequest(BaseModel):
     category: DocumentCategory
     keywords: list[str]
+    description: str
     user_text: str
 
 
