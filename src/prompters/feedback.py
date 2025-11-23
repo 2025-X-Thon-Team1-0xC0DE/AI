@@ -1,5 +1,6 @@
 from .abstract import Prompter
 from src.enums import DocumentCategory
+from typing import Optional
 
 PROMPT_TEMPLATES = {
     # 1. 이력서 (RESUME): 경력, 성과 위주
@@ -54,7 +55,7 @@ FEEDBACK_RULE = """
 
 
 class FeedbackPrompter(Prompter):
-    def __init__(self, category: DocumentCategory, keywords: list[str] = None):
+    def __init__(self, category: DocumentCategory, keywords: Optional[list[str]] = None):
         self.category = category
         self.keywords = keywords if keywords else []
 
